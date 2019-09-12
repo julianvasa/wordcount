@@ -1,4 +1,4 @@
-Read a file from /opt/tmp/example.txt and count the lines, words and
+Read a file from resources/example.txt and count the lines, words and
 characters and print the results A "word" is everything that is separated by
 a white-space, e.g. " one, two 123 four " is 4 words. Punctuation characters
 like "." and "," are treated as white space. Whitespace and newlines are no
