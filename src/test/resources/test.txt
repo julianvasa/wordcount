@@ -1,0 +1,4 @@
+Welcome to The Rust Programming Language  
+an introductory book about Rust 
+
+
