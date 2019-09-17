@@ -27,17 +27,71 @@ import static java.util.stream.Collectors.groupingBy;
 public class WordCounterStreams {
 
 
-    public static ImmutableTriple countLinesWordsChars(String filePath) {
-        Long lines = 0L;
-        Long words = 0L;
-        Long characters = 0L;
-        if (filePath.isEmpty()) filePath = "example.txt";
-        Path path = Paths.get(WordCounterStreams.class.getClassLoader().getResource(filePath).getPath());
+    static long countLinesFromTextFile(String filePath) {
+        long lines = 0L;
+        Path path = getFilePath(filePath);
+
+        try {
+            lines = Files.lines(path).count();
+            System.out.println("lines: " + lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    static long countWordsFromTextFile(String filePath) {
+        long words = 0L;
+        Path path = getFilePath(filePath);
 
         try {
             words = Files.lines(path)
-                .flatMap(str->Stream.of(str.split("[ ,.]")))
-                .filter(s->s.length()>0).count();
+                .flatMap(str -> Stream.of(str.split("[ ,.]")))
+                .filter(s -> s.length() > 0).count();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("words: " + words);
+        return words;
+    }
+
+    static long countCharsFromTextFile(String filePath) {
+        long characters = 0L;
+        Path path = getFilePath(filePath);
+
+        try {
+            final Map<Character, Integer> countCharacters = Files.lines(path).
+                flatMap(line -> IntStream.range(0, line.length()).mapToObj(line::charAt)).
+                filter(Character::isLetter).
+                map(Character::toLowerCase).
+                collect(TreeMap::new, (m, c) -> m.merge(c, 1, Integer::sum), Map::putAll);
+
+            characters = countCharacters.values().stream().mapToLong(t -> t).sum();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("characters: " + characters);
+        return characters;
+    }
+
+    private static Path getFilePath(String filePath) {
+        if (filePath.isEmpty()) filePath = "example.txt";
+        return Paths.get(Objects.requireNonNull(WordCounterStreams.class.getClassLoader().getResource(filePath)).getPath());
+    }
+
+    static ImmutableTriple countLinesWordsChars(String filePath) {
+        long lines = 0L;
+        long words = 0L;
+        long characters = 0L;
+        Path path = getFilePath(filePath);
+
+        try {
+            words = Files.lines(path)
+                .flatMap(str -> Stream.of(str.split("[ ,.]")))
+                .filter(s -> s.length() > 0).count();
 
             lines = Files.lines(path).count();
 
@@ -47,7 +101,7 @@ public class WordCounterStreams {
                 map(Character::toLowerCase).
                 collect(TreeMap::new, (m, c) -> m.merge(c, 1, Integer::sum), Map::putAll);
 
-            characters = countCharacters.values().stream().mapToLong(t-> t).sum();
+            characters = countCharacters.values().stream().mapToLong(t -> t).sum();
         } catch (IOException e) {
             e.printStackTrace();
         }

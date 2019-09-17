@@ -27,4 +27,25 @@ public class WordCounterStreamTest {
         ImmutableTriple statistics = WordCounterStreams.countLinesWordsChars("test.txt");
         assertEquals(expectedLines, statistics.left);
     }
+
+    @Test
+    public void givenTextFile_shouldReturnNumberOfCharsV2(){
+        long expectedCharacters = 62L;
+        long chars = WordCounterStreams.countCharsFromTextFile("test.txt");
+        assertEquals(expectedCharacters, chars);
+    }
+
+    @Test
+    public void givenTextFile_shouldReturnNumberOfWordsV2(){
+        long expectedWords = 11L;
+        long words = WordCounterStreams.countWordsFromTextFile("test.txt");
+        assertEquals(expectedWords, words);
+    }
+
+    @Test
+    public void givenTextFile_shouldReturnNumberOfLinesV2(){
+        long expectedLines = 4L;
+        long lines = WordCounterStreams.countLinesFromTextFile("test.txt");
+        assertEquals(expectedLines, lines);
+    }
 }
